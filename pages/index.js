@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export default function IndexPage() {
-  const [inputValue, setInputValue] = useState('เปลี่ยยน')
+  const [inputValue, setInputValue] = useState('')
   return (
     <div className="h-full bg-gray-100 flex items-start justify-center">
       <div className="w-1/2 flex flex-col items-end">
