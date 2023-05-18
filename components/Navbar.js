@@ -5,7 +5,6 @@ export default function Navbar() {
     const router = useRouter()
 
     const hello = () => {
-        // alert('good evening')
         const action = confirm('ไปต่อหรือถอยดี')
         if (action) {
             router.push('/login')
@@ -16,7 +15,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="bg-black text-white p-4 flex flex-row gap-5">
+        <nav className="bg-black text-white p-4 flex flex-row gap-5 fixed left-0 right-0">
             <div>
                 <Link href="/">
                     Home
