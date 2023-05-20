@@ -1,22 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 
-export async function getServerSideProps() {
+// export async function getServerSideProps() {
+//   const response = await fetch('https://api.zenon.si/post')
+//   const data = await response.json()
+//   return {
+//     props: {
+//       tweets: data,
+//     }
+//   }
+// }
+export async function getStaticProps() {
+  console.log('get tweets in build')
   const response = await fetch('https://api.zenon.si/post')
   const data = await response.json()
   return {
     props: {
       tweets: data,
-    }
+    },
+    revalidate: 86400,
   }
 }
 
-const isClient = typeof window !== 'undefined'
+// const isClient = typeof window !== 'undefined'
 
 export default function IndexPage(props) {
   const [inputValue, setInputValue] = useState('')
   const [name, setName] = useState('')
   const [list, setList] = useState(props.tweets)
   const page = useRef(0)
+  const session = useSession()
+
+  console.log(session)
 
   useEffect(() => {
     // // console.log('เข้าหน้าเสร็จแล้ว')
@@ -106,6 +121,12 @@ export default function IndexPage(props) {
               }}
             />
         </div>
+        <button
+          className="bg-red-400 p-8"
+          onClick={signIn}
+        >
+          My Login
+        </button>
         <button
           className="mt-6 bg-gray-800 text-white font-bold px-8 py-4 rounded-lg shadow-lg"
           type="submit"
