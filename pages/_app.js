@@ -9,7 +9,7 @@ const sarabun = Sarabun({
 
 export default function App({ Component, pageProps }) {
   return (
-      <div className={"h-full " + sarabun.className}>
+      <div className={"min-h-full " + sarabun.className}>
         <Navbar />
         <Component {...pageProps} />
       </div>

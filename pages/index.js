@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export async function getServerSideProps() {
   const response = await fetch('https://api.zenon.si/post')
@@ -10,20 +10,57 @@ export async function getServerSideProps() {
   }
 }
 
+const isClient = typeof window !== 'undefined'
 
 export default function IndexPage(props) {
   const [inputValue, setInputValue] = useState('')
   const [name, setName] = useState('')
   const [list, setList] = useState(props.tweets)
+  const page = useRef(0)
 
   useEffect(() => {
-    // loadList()
+    // // console.log('เข้าหน้าเสร็จแล้ว')
+    // // client
+    // // setScrollY(window.scrollY)
+
+    const handler = () => {
+      if (
+        Math.round(
+          window.scrollY + window.innerHeight
+        ) === document.body.offsetHeight
+      ) {
+        loadList()
+      }
+    }
+
+    // // Add effect-listener
+    window.addEventListener('scroll', handler)
+    
+    // // window.removeEventListener
+    return () => {
+      // console.log('ออกหน้าแล้ว')
+      // Remove effect-listener
+      window.removeEventListener('scroll', handler)
+    }
   }, [])
 
-  const loadList = () => {
-    fetch('https://api.zenon.si/post')
+  const loadList = (isRefresh = false) => {
+    if (!isRefresh) {
+      page.current = page.current + 1
+    }
+    else {
+      page.current = 0
+    }
+    fetch('https://api.zenon.si/post?page=' + page.current)
       .then(response => response.json())
-      .then(data => setList(data))
+      .then(data => {
+        if (!isRefresh) {
+          setList([ ...list, ...data  ])
+        }
+        else {
+          setList(data)
+        }
+      })
   }
 
   const tweet = () => {
@@ -36,7 +73,7 @@ export default function IndexPage(props) {
         },
         body: JSON.stringify({ name: name, content: inputValue, }),
       })
-        .then(() => loadList())
+        .then(() => loadList(true))
     }
   }
 
@@ -78,7 +115,7 @@ export default function IndexPage(props) {
         <button
           className="bg-gray-400 text-white p-4 rounded-lg"
           type="button"
-          onClick={loadList}
+          onClick={() => loadList(true)}
         >
           Refresh
         </button>
