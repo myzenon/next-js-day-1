@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react'
 
-export default function IndexPage() {
+export async function getServerSideProps() {
+  const response = await fetch('https://api.zenon.si/post')
+  const data = await response.json()
+  return {
+    props: {
+      tweets: data,
+    }
+  }
+}
+
+
+export default function IndexPage(props) {
   const [inputValue, setInputValue] = useState('')
   const [name, setName] = useState('')
-  const [list, setList] = useState([])
+  const [list, setList] = useState(props.tweets)
 
   useEffect(() => {
-    loadList()
+    // loadList()
   }, [])
 
   const loadList = () => {
@@ -38,7 +49,7 @@ export default function IndexPage() {
           tweet()
         }}
       >
-        <div className="w-full mt-48 mb-4 bg-blue-400 p-4 rounded-lg shadow-lg">
+        <div className="w-full mt-48 mb-4 bg-black p-4 rounded-lg shadow-lg">
           <input type="text"
           className="bg-black text-white outline-none w-full"
             onChange={({ target: { value} }) => setName(value)}
